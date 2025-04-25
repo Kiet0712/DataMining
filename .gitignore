@@ -1,2 +1,4 @@
 __pycache__/
 /checkpoints/
+
+/fe/node_modules/
