@@ -65,7 +65,7 @@ function EachQuestion() {
             toast.error("Please fill in all the answers");
             return;
         }
-        // const res = await axios.get('/api/users?page=2');
+        const res = await axios.post('/submit_question', { question: question, answers: answerBlocks });
         //call API
         // res = 
     }
