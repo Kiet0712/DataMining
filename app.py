@@ -2,6 +2,7 @@ from typing import List
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse , JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from inference import *
 import torch
 import uvicorn
@@ -12,7 +13,15 @@ templates = Jinja2Templates(directory="templates")
 
 
 # main.py
+origins = ["*"]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,  # Be cautious with this in production with "*"
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 app = FastAPI()
