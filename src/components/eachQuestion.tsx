@@ -65,9 +65,10 @@ function EachQuestion() {
             toast.error("Please fill in all the answers");
             return;
         }
-        const res = await axios.post('/submit_question', { question: question, answers: answerBlocks });
-        //call API
-        // res = 
+        const formData = new FormData();
+        formData.append("questionText", question);
+        formData.append("options", JSON.stringify(answerBlocks.map((block) => block.value)));
+        const res = await axios.post('/submit_question', formData);
     }
     return (<>
         <div className="each-question-container w-full h-full">
