@@ -1,3 +1,8 @@
 __pycache__/
 /checkpoints/
+<<<<<<< HEAD
 /node_modules/
+=======
+
+/fe/node_modules/
+>>>>>>> 7df6b3460f8f0888e15454f7834e1f3fc70225ab
