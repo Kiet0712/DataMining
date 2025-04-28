@@ -179,8 +179,11 @@ def main(model_path, test_csv_path, output_csv_path):
     with torch.no_grad():
         for batch in test_dataloader:
             inputs = {'question': batch['question'], 'options': batch['options']}
+            print(inputs)
             outputs = model(inputs)
+            print(outputs)
             predictions.extend(outputs)
+            break
 
     # Map predictions to letter labels
     letter_labels = list(string.ascii_uppercase)

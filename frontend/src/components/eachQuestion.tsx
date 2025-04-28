@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
 import axios from '../services/axiosServices'
+import { an } from "react-router/dist/development/route-data-OcOrqK13";
 function EachQuestion() {
     const [question, setQuestion] = useState<string>("");
     const [answerBlocks, setAnswerBlocks] = useState<{ id: number, value: string }[]>([{ id: 1, value: "" }]);
@@ -65,10 +66,25 @@ function EachQuestion() {
             toast.error("Please fill in all the answers");
             return;
         }
+        try{
         const formData = new FormData();
         formData.append("questionText", question);
-        formData.append("options", JSON.stringify(answerBlocks.map((block) => block.value)));
-        const res = await axios.post('/submit_question', formData);
+        let optopns = "";
+        for (let i = 0; i < answerBlocks.length; i++) {
+            optopns += answerBlocks[i].value;
+            if (i != answerBlocks.length - 1) {
+                optopns += ",";
+            }
+        }
+        formData.append("options", optopns);
+        const res = await axios.post('/submit_question/', formData);
+        console.log(res.data.output); // []
+        console.log(res.data.predicted_answer); // "A"
+        } catch (error) {
+            console.log(error);
+        }
+        
+
     }
     return (<>
         <div className="each-question-container w-full h-full">
