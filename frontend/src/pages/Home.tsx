@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Option } from "../interface/optionInterface";
 import EachQuestion from "../components/eachQuestion";
+import CopyPastQuestion from "../components/copyPastQuestion";
+import FileQuestion from "../components/fileQuestion";
 
 function HomePage({ selectedOption }: { selectedOption: Option }) {
 
@@ -13,11 +15,12 @@ function HomePage({ selectedOption }: { selectedOption: Option }) {
             <div className="flex-6">
                 {selectedOption?.id == 1 ?
                     <EachQuestion /> :
-                    // selectedOption?.id == 2 ?
-                    //     <EachQuestion /> :
-                    //     selectedOption?.id == 3 ?
-                    //         <EachQuestion /> :
-                    <></>
+                    selectedOption?.id == 2 ?
+                        <CopyPastQuestion /> :
+                        //     <EachQuestion /> :
+                        selectedOption?.id == 3 ?
+                            <FileQuestion /> :
+                            <></>
                 }
             </div>
         </div>
