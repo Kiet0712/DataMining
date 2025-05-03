@@ -1,9 +1,10 @@
 import { useState } from "react";
 import axios from '../services/axiosServices'
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 function CopyPastQuestion() {
     const [question, setQuestion] = useState<string>("");
-
+    const navigate = useNavigate();
     const updateQuestion = (question: string) => {
         setQuestion(question);
     }
@@ -13,11 +14,40 @@ function CopyPastQuestion() {
             toast.error("Please enter a question");
             return;
         }
+        let question_ = question.replace(/\n/g, " ");
+        question_ = question_.replace("A.", "@@##");
+        question_ = question_.replace("B.", "@@##");
+        question_ = question_.replace("C.", "@@##");
+        question_ = question_.replace("D.", "@@##");
+        question_ = question_.replace("E.", "@@##");
+        question_ = question_.replace("F.", "@@##");
         try {
             const formData = new FormData();
             formData.append("copiedText", question);
             const res = await axios.post('/submit_copy_text/', formData);
+
             console.log(res.data); // []
+
+            let formatData = res.data.output.map((item: any) => {
+                let answerBlocks: any[] = [];
+                for (let i = 0; i < item.options.length; i++) {
+                    answerBlocks.push({
+                        value: item?.options[i],
+                        acc: item?.acc[i],
+                        id: i + item.options
+                    })
+                }
+                return {
+                    question: item.question,
+                    answerBlocks: answerBlocks
+                }
+            });
+
+            let old_data: any = localStorage.getItem("data")
+            old_data = JSON.parse(old_data)
+            old_data.push(...formatData)
+            localStorage.setItem("data", old_data);
+            navigate("/history")
         } catch (error) {
             console.log(error);
         }
