@@ -1,3 +1,6 @@
 transformers 
 datasets 
 evaluate
+fastapi
+uvicorn
+torch

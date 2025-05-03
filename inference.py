@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader, Dataset
 import torch.nn as nn
 from functools import reduce
 import numpy as np
+
 # Define the model and tokenizer
 model_name = "microsoft/codebert-base"
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -178,8 +179,11 @@ def main(model_path, test_csv_path, output_csv_path):
     with torch.no_grad():
         for batch in test_dataloader:
             inputs = {'question': batch['question'], 'options': batch['options']}
+            print(inputs)
             outputs = model(inputs)
+            print(outputs)
             predictions.extend(outputs)
+            break
 
     # Map predictions to letter labels
     letter_labels = list(string.ascii_uppercase)
@@ -189,13 +193,13 @@ def main(model_path, test_csv_path, output_csv_path):
     results_df = pd.DataFrame({'task_id': [item['id'] for item in formatted_test_data], 'answer': predicted_letters})
 
     # Save the results to a CSV file
-    os.makedirs(os.path.dirname(output_csv_path), exist_ok=True)
+    #os.makedirs(os.path.dirname(output_csv_path), exist_ok=True)
     results_df.to_csv(output_csv_path, index=False)
     print(f"Predictions saved to {output_csv_path}")
 
 if __name__ == "__main__":
     # Example usage:
-    model_path = "/workspace/source/deepseek/best_mcqa_model.pth"  # Replace with your actual model path
-    test_csv_path = "/workspace/source/deepseek/dataset/b6_test_data.csv"  # Replace with your test CSV path
-    output_csv_path = "/workspace/source/deepseek/predictions_new.csv" # Replace with your desired output path
+    model_path = "checkpoints/best_mcqa_model.pth"  # Replace with your actual model path
+    test_csv_path = "dataset/b6_test_data.csv"  # Replace with your test CSV path
+    output_csv_path = "lmao.csv" # Replace with your desired output path
     main(model_path, test_csv_path, output_csv_path)
