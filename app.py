@@ -104,24 +104,30 @@ async def submit_copy_text(request: Request):
     """
     form = await request.form()
     copied_text = form.get("copiedText")
+    copied_text = copied_text.split('@@##')
+    #copied_text = [question1,option1,option2,question2,option1,option2]
+
     # form.getlist will collect every form field named "options"
     request_sentence = """
 Could you turn above text into lines response like 
 
-questionText1,optionText1,optionText2,...
-
-questionText2,optionText1,optionText2,...
+questionText1@@##optionText1@@##optionText2,...,questionText3@@##optionText1@@##optionText3,...
 ...
 """
     question_text = []
     options = []
+    helper = []
+    question_text.append(copied_text[0])
+    for x in copied_text[1:]:
+        if pipe(x)[0]['label'] == 'LABEL_1':
+            question_text.append(x)
+            options += [helper]
+            helper = []
+        else:
+            helper += [x]
+
+    options += [helper]
     try:
-        call_gemini_api(copied_text +  request_sentence)
-        with open('api_response.txt', 'r') as f:
-            for line in f:
-                parts = line.strip().split(',')
-                question_text.append(parts[0])
-                options.append(parts[1:])
         print(question_text, options)
 
             
@@ -139,7 +145,7 @@ questionText2,optionText1,optionText2,...
         # Here you could save to the database...
         return JSONResponse({
             "predicted_answer": predicted_answer_list,
-            "output": [x.tolist() for x in outputs]
+            "output": [{'question' : question_text[i] , 'options' : options[i] , 'acc' : outputs[i].tolist()} for i in range(len(question_text))]
         })
     except Exception as e:
         print(e)
@@ -186,7 +192,9 @@ async def submit_file(request: Request):
                 questions += [f.readline().rstrip('\n')]
                 helper = []
                 for line in f:
-                    if pipe(line.rstrip())[0]['label'] == 'LABEL_1':
+                    if len(line.rstrip()) == 0:
+                        continue
+                    if pipe(line.rstrip())[0]['label'] == 'LABEL_1' or len(line.rstrip()) == 0:
                         questions.append(line.rstrip('\n'))
                         options += [helper]
                         helper = []

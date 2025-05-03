@@ -106,8 +106,8 @@ class MCQA(nn.Module):
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 model = MCQA(model_name).to(device)
 
-file_path = r"C:\Users\dangv\Desktop\DM\dataset\b6_train_data.csv"
-test_file_path = r"C:\Users\dangv\Desktop\DM\dataset\b6_test_data.csv"
+file_path = r"C:\Users\ad\Desktop\2 Data Mining Tiếng Việt\DataMining\dataset\b6_train_data.csv"
+test_file_path = r"C:\Users\ad\Desktop\2 Data Mining Tiếng Việt\DataMining\dataset\b6_test_data.csv"
 df = pd.read_csv(file_path)
 df = df[df['choices'] != '[]']
 test_df = pd.read_csv(test_file_path)
