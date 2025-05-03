@@ -106,8 +106,8 @@ class MCQA(nn.Module):
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 model = MCQA(model_name).to(device)
 
-file_path = "/workspace/source/deepseek/dataset/b6_train_data.csv"
-test_file_path = "/workspace/source/deepseek/dataset/b6_test_data.csv"
+file_path = r"C:\Users\dangv\Desktop\DM\dataset\b6_train_data.csv"
+test_file_path = r"C:\Users\dangv\Desktop\DM\dataset\b6_test_data.csv"
 df = pd.read_csv(file_path)
 df = df[df['choices'] != '[]']
 test_df = pd.read_csv(test_file_path)
@@ -163,13 +163,13 @@ def collate_fn(batch):
     else:
         return {'question': questions, 'options': options_list}
 
-train_dataloader = DataLoader(train_dataset, batch_size=8, shuffle=True, collate_fn=collate_fn)
-val_dataloader = DataLoader(val_dataset, batch_size=8, collate_fn=collate_fn)
+train_dataloader = DataLoader(train_dataset, batch_size=4, shuffle=True, collate_fn=collate_fn)
+val_dataloader = DataLoader(val_dataset, batch_size=4, collate_fn=collate_fn)
 
-optimizer = optim.AdamW(model.parameters(), lr=1e-4)
+optimizer = optim.AdamW(model.parameters(), lr=1e-5)
 criterion = nn.CrossEntropyLoss()
 num_epochs = 10
-output_dir = "/workspace/source/deepseek/"
+output_dir = "./outputs"
 best_accuracy = 0.0
 best_model_state = None
 
@@ -290,6 +290,6 @@ predicted_letters = [get_predicted_letter(pred, len(item['options'])) for pred, 
 results_df = pd.DataFrame({'task_id': [item['id'] for item in formatted_test_data], 'answer': predicted_letters})
 
 # Write the results to a CSV file
-results_csv_path = "/workspace/source/deepseek/predictions.csv"
+results_csv_path = "./outputs/predictions.csv"
 results_df.to_csv(results_csv_path, index=False)
 print(f"Predictions saved to {results_csv_path}")
